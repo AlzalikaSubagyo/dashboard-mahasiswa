@@ -160,7 +160,7 @@
 <div id="app-wrapper">
 
     <!-- Overlay (mobile) -->
-    <div id="overlay" onclick="closeSidebar()"></div>
+    <div id="overlay" class="fixed inset-0 bg-black/40 z-20" onclick="closeSidebar()" style="display:none;"></div>
 
     <!-- ===== SIDEBAR ===== -->
     <aside id="sidebar">
