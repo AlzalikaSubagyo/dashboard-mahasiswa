@@ -38,7 +38,7 @@
         }
 
         /* Desktop: sidebar always visible */
-        @media (min-width: 1024px) {
+        @media (min-width: 768px) {
             #sidebar {
                 position: relative !important;
                 transform: translateX(0) !important;
@@ -316,7 +316,7 @@
 
 <script>
     function isMobile() {
-        return window.innerWidth < 1024;
+        return window.innerWidth < 768;
     }
 
     function openSidebar() {
@@ -350,3 +350,4 @@
 </script>
 </body>
 </html>
+
