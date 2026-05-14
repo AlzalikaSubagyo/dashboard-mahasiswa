@@ -7,6 +7,7 @@ use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\AktivitasController;
 use App\Http\Controllers\PklController;
+use App\Http\Controllers\QrAbsensiController;
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -14,6 +15,8 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+// QR Scan - bisa diakses tanpa login
+Route::get('/qr/scan/{token}', [QrAbsensiController::class, 'scan'])->name('qr.scan');
 
 Route::middleware(['auth'])->group(function () {
 
@@ -36,6 +39,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('kehadiran', KehadiranController::class)->except(['show']);
         Route::resource('nilai', NilaiController::class)->except(['show']);
         Route::resource('pkl', PklController::class)->except(['show']);
+        Route::get('/qr-absensi', [QrAbsensiController::class, 'show'])->name('qr.show');
     });
 
     Route::get('/api/matkul/{semester}', function ($semester) {
