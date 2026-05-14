@@ -200,18 +200,35 @@
 </div>
 
 <script>
+function isMobile() { return window.innerWidth < 1024; }
+
+function initLayout() {
+    if (isMobile()) {
+        document.getElementById('sidebar').style.cssText = 'position:fixed; top:0; left:0; height:100vh; z-index:30; transform:translateX(-100%);';
+        document.getElementById('hamburger').style.display = 'flex';
+        document.getElementById('close-btn').style.display = 'none';
+    } else {
+        document.getElementById('sidebar').style.cssText = 'position:relative; transform:translateX(0);';
+        document.getElementById('hamburger').style.display = 'none';
+        document.getElementById('close-btn').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+    }
+}
+
 function openSidebar() {
-    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebar').style.transform = 'translateX(0)';
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('close-btn').style.display = 'flex';
 }
+
 function closeSidebar() {
-    if (window.innerWidth < 1024) {
-        document.getElementById('sidebar').classList.remove('open');
+    if (isMobile()) {
+        document.getElementById('sidebar').style.transform = 'translateX(-100%)';
         document.getElementById('overlay').style.display = 'none';
         document.getElementById('close-btn').style.display = 'none';
     }
 }
+
+window.addEventListener('resize', initLayout);
+window.addEventListener('DOMContentLoaded', initLayout);
 </script>
-</body>
-</html>
