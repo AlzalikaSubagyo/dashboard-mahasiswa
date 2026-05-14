@@ -44,7 +44,7 @@ $statusLabel = match($s) {
             </div>
             <div class="flex justify-between items-center py-2 border-b border-slate-50">
                 <span class="text-xs text-slate-400">Email</span>
-                <span class="text-xs font-medium text-slate-700">{{ $mahasiswa->user?->email ?? '-' }}</span>
+                <span class="text-xs font-medium text-slate-700 truncate">{{ $mahasiswa->user?->email ?? '-' }}</span>
             </div>
             <div class="flex justify-between items-center py-2 border-b border-slate-50">
                 <span class="text-xs text-slate-400">Kehadiran</span>
@@ -70,47 +70,34 @@ $statusLabel = match($s) {
                 Kembali
             </a>
         </div>
-
-        <!-- QR Absensi -->
-        <div class="mt-5 border-t border-slate-100 pt-5">
-            <h3 class="font-semibold text-slate-800 text-sm mb-3 text-center">📱 QR Absensi</h3>
-            <p class="text-xs text-slate-400 text-center mb-3">Generate QR untuk mahasiswa ini scan dan absen otomatis. Berlaku 5 menit.</p>
-
-            <button onclick="generateQR()" id="btn-generate"
-                class="w-full px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.24M16.24 12l-.01.01M12 12v.01M12 16h.01M8 12H4m4 0v4m0-4V8m0 0H4m4 0h4"/>
-                </svg>
-                Generate QR Code
-            </button>
-
-            <!-- QR Display -->
-            <div id="qr-container" class="hidden mt-4">
-                <div class="bg-slate-50 rounded-2xl p-4 text-center border border-slate-200">
-                    <div id="qr-code" class="flex justify-center mb-3"></div>
-                    <p class="text-xs text-slate-500 mb-1">Scan QR ini untuk absen</p>
-                    <div id="qr-timer" class="text-sm font-bold text-indigo-600"></div>
-                    <p class="text-xs text-red-400 mt-1">QR kadaluarsa dalam 5 menit</p>
-                </div>
-                <button onclick="generateQR()" class="w-full mt-2 px-4 py-2 bg-slate-100 text-slate-600 rounded-xl text-sm font-medium hover:bg-slate-200 transition-colors">
-                    🔄 Refresh QR
-                </button>
-            </div>
-        </div>
     </div>
 
-    <!-- Detail Data -->
+    <!-- Kanan -->
     <div class="lg:col-span-2 space-y-4">
 
-        <!-- Grafik Nilai Line Chart -->
+        <!-- Line Chart Nilai -->
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
             <h3 class="font-semibold text-slate-800 mb-1">📈 Grafik Nilai per Mata Kuliah</h3>
             <p class="text-xs text-slate-400 mb-4">Perkembangan nilai {{ $mahasiswa->nama }}</p>
             @if($nilais->count() > 0)
                 <canvas id="chartNilaiDetail" height="130"></canvas>
+                <div class="flex items-center gap-4 mt-4 justify-center">
+                    <div class="flex items-center gap-1.5">
+                        <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                        <span class="text-xs text-slate-500">Baik (≥75)</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                        <span class="text-xs text-slate-500">Cukup (60–74)</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <span class="text-xs text-slate-500">Kurang (&lt;60)</span>
+                    </div>
+                </div>
             @else
-                <div class="flex flex-col items-center justify-center py-10 text-slate-400">
-                    <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex flex-col items-center justify-center py-10 text-slate-300">
+                    <svg class="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </svg>
                     <p class="text-sm">Belum ada data nilai</p>
@@ -119,7 +106,7 @@ $statusLabel = match($s) {
         </div>
 
         <!-- Statistik Kehadiran -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-4 gap-3">
             @php
                 $totalHadir = $mahasiswa->kehadirans()->where('status', 'hadir')->count();
                 $totalIzin  = $mahasiswa->kehadirans()->where('status', 'izin')->count();
@@ -193,55 +180,65 @@ $statusLabel = match($s) {
                         <th class="px-5 py-3 text-left">Mata Kuliah</th>
                         <th class="px-5 py-3 text-center">Minggu</th>
                         <th class="px-5 py-3 text-center">Nilai</th>
+                        <th class="px-5 py-3 text-center">Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
                     @forelse($nilais as $n)
+                    @php
+                        $nv = $n->nilai;
+                        $nc = $nv >= 75 ? 'text-emerald-600' : ($nv >= 60 ? 'text-amber-600' : 'text-red-600');
+                        $nl = $nv >= 75 ? 'Baik' : ($nv >= 60 ? 'Cukup' : 'Kurang');
+                        $nb = $nv >= 75 ? 'bg-emerald-100 text-emerald-700' : ($nv >= 60 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700');
+                    @endphp
                     <tr class="hover:bg-slate-50">
                         <td class="px-5 py-3 font-medium text-slate-700">{{ $n->mataKuliah->nama_matkul ?? '-' }}</td>
                         <td class="px-5 py-3 text-center text-slate-500">Minggu {{ $n->minggu }}</td>
+                        <td class="px-5 py-3 text-center font-bold {{ $nc }}">{{ number_format($n->nilai, 1) }}</td>
                         <td class="px-5 py-3 text-center">
-                            <span class="font-bold {{ $n->nilai < 60 ? 'text-red-600' : ($n->nilai < 75 ? 'text-amber-600' : 'text-emerald-600') }}">
-                                {{ $n->nilai }}
-                            </span>
+                            <span class="px-2.5 py-1 rounded-full text-xs font-semibold {{ $nb }}">{{ $nl }}</span>
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="3" class="px-5 py-6 text-center text-slate-400">Belum ada data nilai</td></tr>
+                    <tr><td colspan="4" class="px-5 py-6 text-center text-slate-400">Belum ada data nilai</td></tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+
     </div>
 </div>
 
-<!-- QR JS Library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 <script>
-// Line Chart Nilai
 @if($nilais->count() > 0)
 const nilaiData = @json($nilais->map(fn($n) => [
-    'matkul' => $n->mataKuliah->nama_matkul ?? 'N/A',
-    'nilai'  => $n->nilai,
-    'minggu' => $n->minggu,
+    'label' => ($n->mataKuliah->nama_matkul ?? 'N/A') . ' (Mgg ' . $n->minggu . ')',
+    'nilai' => (float) $n->nilai,
 ])->values());
+
+const pointColors = nilaiData.map(n =>
+    n.nilai >= 75 ? 'rgb(16,185,129)' :
+    n.nilai >= 60 ? 'rgb(245,158,11)' :
+    'rgb(239,68,68)'
+);
 
 new Chart(document.getElementById('chartNilaiDetail'), {
     type: 'line',
     data: {
-        labels: nilaiData.map(n => (n.matkul.length > 15 ? n.matkul.substr(0, 15) + '...' : n.matkul) + ' (Mgg ' + n.minggu + ')'),
+        labels: nilaiData.map(n => n.label),
         datasets: [{
             label: 'Nilai',
             data: nilaiData.map(n => n.nilai),
             borderColor: 'rgb(99,102,241)',
-            backgroundColor: 'rgba(99,102,241,0.08)',
+            backgroundColor: 'rgba(99,102,241,0.07)',
             fill: true,
             tension: 0.4,
-            pointBackgroundColor: nilaiData.map(n => n.nilai >= 75 ? 'rgb(16,185,129)' : n.nilai >= 60 ? 'rgb(245,158,11)' : 'rgb(239,68,68)'),
-            pointRadius: 6,
-            pointHoverRadius: 8,
-            borderWidth: 2,
+            pointBackgroundColor: pointColors,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 7,
+            pointHoverRadius: 9,
+            borderWidth: 2.5,
         }]
     },
     options: {
@@ -250,82 +247,24 @@ new Chart(document.getElementById('chartNilaiDetail'), {
             legend: { display: false },
             tooltip: {
                 callbacks: {
-                    label: ctx => 'Nilai: ' + ctx.parsed.y
+                    label: ctx => ' Nilai: ' + ctx.parsed.y
                 }
             }
         },
         scales: {
             y: {
-                beginAtZero: false,
                 min: 0,
                 max: 100,
                 grid: { color: '#f1f5f9' },
-                ticks: {
-                    callback: val => val
-                }
+                ticks: { font: { size: 11 } }
             },
-            x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+            x: {
+                grid: { display: false },
+                ticks: { font: { size: 10 }, maxRotation: 30 }
+            }
         }
     }
 });
 @endif
-
-// QR Code Generator
-let timerInterval = null;
-
-async function generateQR() {
-    const btn = document.getElementById('btn-generate');
-    btn.disabled = true;
-    btn.innerHTML = '⏳ Generating...';
-
-    try {
-        const response = await fetch('{{ route("qr.generate", $mahasiswa) }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        });
-        const data = await response.json();
-
-        // Tampilkan QR
-        document.getElementById('qr-container').classList.remove('hidden');
-        document.getElementById('qr-code').innerHTML = '';
-
-        new QRCode(document.getElementById('qr-code'), {
-            text: data.scan_url,
-            width: 200,
-            height: 200,
-            colorDark: '#1e1b4b',
-            colorLight: '#ffffff',
-            correctLevel: QRCode.CorrectLevel.H
-        });
-
-        // Timer countdown
-        if (timerInterval) clearInterval(timerInterval);
-        const expiresAt = new Date(data.expires_at);
-
-        timerInterval = setInterval(() => {
-            const now = new Date();
-            const diff = Math.max(0, Math.floor((expiresAt - now) / 1000));
-            const mnt = Math.floor(diff / 60);
-            const det = diff % 60;
-            document.getElementById('qr-timer').textContent = `⏱ ${mnt}:${String(det).padStart(2, '0')} tersisa`;
-
-            if (diff <= 0) {
-                clearInterval(timerInterval);
-                document.getElementById('qr-timer').textContent = '❌ QR Kadaluarsa';
-                document.getElementById('qr-timer').className = 'text-sm font-bold text-red-500';
-            }
-        }, 1000);
-
-        btn.disabled = false;
-        btn.innerHTML = '✅ QR Aktif — Generate Ulang';
-
-    } catch (e) {
-        btn.disabled = false;
-        btn.innerHTML = '⚠️ Gagal, Coba Lagi';
-    }
-}
 </script>
 @endsection
