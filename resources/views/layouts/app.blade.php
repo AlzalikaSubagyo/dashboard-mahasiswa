@@ -14,16 +14,47 @@
         .sidebar-item.active { background: rgba(99,102,241,0.12); border-right: 3px solid #6366f1; color: #4f46e5; }
         #sidebar { transition: transform 0.25s ease; }
         #overlay { transition: opacity 0.25s ease; }
+
+        @media (max-width: 1023px) {
+            #sidebar {
+                position: fixed;
+                transform: translateX(-100%);
+                z-index: 30;
+                height: 100%;
+            }
+            #sidebar.open {
+                transform: translateX(0);
+            }
+            #overlay {
+                display: none;
+            }
+            #overlay.open {
+                display: block;
+            }
+            #hamburger {
+                display: block;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #sidebar {
+                position: static;
+                transform: translateX(0);
+            }
+            #hamburger {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
 <div class="flex h-screen overflow-hidden">
 
-    <!-- Overlay (mobile) -->
-    <div id="overlay" class="fixed inset-0 bg-black/40 z-20 hidden opacity-0 lg:hidden" onclick="closeSidebar()"></div>
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black/40 z-20" onclick="closeSidebar()"></div>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed lg:static z-30 w-64 h-full bg-white border-r border-slate-200 flex flex-col shadow-sm shrink-0 -translate-x-full lg:translate-x-0">
+    <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shadow-sm shrink-0">
         <div class="p-5 border-b border-slate-100 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md">
@@ -36,9 +67,10 @@
                     <p class="text-xs text-slate-400">Monitoring Mahasiswa</p>
                 </div>
             </div>
-            <!-- Close button mobile -->
-            <button onclick="closeSidebar()" class="lg:hidden text-slate-400 hover:text-slate-600">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <button onclick="closeSidebar()" id="close-btn" class="text-slate-400 hover:text-slate-600" style="display:none;">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
             </button>
         </div>
 
@@ -145,16 +177,17 @@
     <div class="flex-1 flex flex-col overflow-hidden min-w-0">
         <header class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between shrink-0">
             <div class="flex items-center gap-3">
-                <!-- Hamburger button (mobile) -->
-                <button onclick="openSidebar()" class="lg:hidden text-slate-500 hover:text-slate-700 p-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <button id="hamburger" onclick="openSidebar()" class="text-slate-500 hover:text-slate-700 p-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
                 </button>
-                <h1 class="text-base lg:text-lg font-bold text-slate-800">@yield('page-title', 'Dashboard')</h1>
+                <h1 class="text-base font-bold text-slate-800">@yield('page-title', 'Dashboard')</h1>
             </div>
-            <span class="text-xs lg:text-sm text-slate-400">{{ now()->translatedFormat('d F Y') }}</span>
+            <span class="text-xs text-slate-400">{{ now()->translatedFormat('d F Y') }}</span>
         </header>
 
-        <main class="flex-1 overflow-y-auto p-4 lg:p-6">
+        <main class="flex-1 overflow-y-auto p-4">
             @if(session('success'))
             <div class="mb-4 bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
                 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -174,18 +207,16 @@
 
 <script>
 function openSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    sidebar.classList.remove('-translate-x-full');
-    overlay.classList.remove('hidden');
-    setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('close-btn').style.display = 'block';
 }
 function closeSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    sidebar.classList.add('-translate-x-full');
-    overlay.classList.add('opacity-0');
-    setTimeout(() => overlay.classList.add('hidden'), 250);
+    if (window.innerWidth < 1024) {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('overlay').classList.remove('open');
+        document.getElementById('close-btn').style.display = 'none';
+    }
 }
 </script>
 </body>
