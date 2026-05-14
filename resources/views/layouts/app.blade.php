@@ -50,7 +50,7 @@
         }
 
         /* Mobile/Tablet: sidebar as drawer */
-        @media (max-width: 1023px) {
+        @media (max-width: 767px) {
             #sidebar {
                 position: fixed !important;
                 top: 0;
@@ -350,4 +350,5 @@
 </script>
 </body>
 </html>
+
 
