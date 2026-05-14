@@ -13,7 +13,6 @@
         .sidebar-item:hover { background: rgba(99,102,241,0.08); }
         .sidebar-item.active { background: rgba(99,102,241,0.12); border-right: 3px solid #6366f1; color: #4f46e5; }
         #sidebar { transition: transform 0.25s ease; }
-        #overlay { transition: opacity 0.25s ease; }
 
         @media (max-width: 1023px) {
             #sidebar {
@@ -25,14 +24,11 @@
             #sidebar.open {
                 transform: translateX(0);
             }
-            #overlay {
-                display: none;
-            }
-            #overlay.open {
-                display: block;
-            }
             #hamburger {
-                display: block;
+                display: block !important;
+            }
+            #close-btn {
+                display: block !important;
             }
         }
 
@@ -42,7 +38,13 @@
                 transform: translateX(0);
             }
             #hamburger {
-                display: none;
+                display: none !important;
+            }
+            #close-btn {
+                display: none !important;
+            }
+            #overlay {
+                display: none !important;
             }
         }
     </style>
@@ -51,7 +53,7 @@
 <div class="flex h-screen overflow-hidden">
 
     <!-- Overlay -->
-    <div id="overlay" class="fixed inset-0 bg-black/40 z-20" onclick="closeSidebar()"></div>
+    <div id="overlay" onclick="closeSidebar()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:20;"></div>
 
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col shadow-sm shrink-0">
@@ -67,7 +69,7 @@
                     <p class="text-xs text-slate-400">Monitoring Mahasiswa</p>
                 </div>
             </div>
-            <button onclick="closeSidebar()" id="close-btn" class="text-slate-400 hover:text-slate-600" style="display:none;">
+            <button id="close-btn" onclick="closeSidebar()" style="display:none;" class="text-slate-400 hover:text-slate-600">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -177,7 +179,7 @@
     <div class="flex-1 flex flex-col overflow-hidden min-w-0">
         <header class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between shrink-0">
             <div class="flex items-center gap-3">
-                <button id="hamburger" onclick="openSidebar()" class="text-slate-500 hover:text-slate-700 p-1">
+                <button id="hamburger" onclick="openSidebar()" style="display:none;" class="text-slate-500 hover:text-slate-700 p-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
@@ -208,13 +210,13 @@
 <script>
 function openSidebar() {
     document.getElementById('sidebar').classList.add('open');
-    document.getElementById('overlay').classList.add('open');
+    document.getElementById('overlay').style.display = 'block';
     document.getElementById('close-btn').style.display = 'block';
 }
 function closeSidebar() {
     if (window.innerWidth < 1024) {
         document.getElementById('sidebar').classList.remove('open');
-        document.getElementById('overlay').classList.remove('open');
+        document.getElementById('overlay').style.display = 'none';
         document.getElementById('close-btn').style.display = 'none';
     }
 }
