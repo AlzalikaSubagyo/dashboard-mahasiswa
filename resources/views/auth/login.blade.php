@@ -55,10 +55,6 @@
                 Masuk
             </button>
         </form>
-
-        <p class="text-center text-xs text-slate-400 mt-6">
-            Default: admin@dashboard.com / password
-        </p>
     </div>
 </div>
 
