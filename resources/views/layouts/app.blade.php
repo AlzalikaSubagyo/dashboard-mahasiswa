@@ -16,36 +16,28 @@
 
         @media (max-width: 1023px) {
             #sidebar {
-                position: fixed;
+                position: fixed !important;
+                top: 0;
+                left: 0;
                 transform: translateX(-100%);
                 z-index: 30;
-                height: 100%;
+                height: 100vh;
             }
             #sidebar.open {
                 transform: translateX(0);
             }
-            #hamburger {
-                display: block !important;
-            }
-            #close-btn {
-                display: block !important;
-            }
+            #hamburger { display: flex !important; }
+            #close-btn { display: flex !important; }
         }
 
         @media (min-width: 1024px) {
             #sidebar {
-                position: static;
-                transform: translateX(0);
+                position: relative !important;
+                transform: translateX(0) !important;
             }
-            #hamburger {
-                display: none !important;
-            }
-            #close-btn {
-                display: none !important;
-            }
-            #overlay {
-                display: none !important;
-            }
+            #hamburger { display: none !important; }
+            #close-btn { display: none !important; }
+            #overlay { display: none !important; }
         }
     </style>
 </head>
@@ -211,7 +203,7 @@
 function openSidebar() {
     document.getElementById('sidebar').classList.add('open');
     document.getElementById('overlay').style.display = 'block';
-    document.getElementById('close-btn').style.display = 'block';
+    document.getElementById('close-btn').style.display = 'flex';
 }
 function closeSidebar() {
     if (window.innerWidth < 1024) {
