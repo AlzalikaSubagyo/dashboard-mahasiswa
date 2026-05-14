@@ -189,7 +189,7 @@
 <div id="app-wrapper">
 
     {{-- OVERLAY --}}
-    <div id="overlay" onclick="closeSidebar()"></div>
+    <div id="overlay" onclick="closeSidebar()"></div></div>
 
     {{-- SIDEBAR --}}
     <aside id="sidebar">
